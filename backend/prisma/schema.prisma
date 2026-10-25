@@ -1,0 +1,159 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PlanStatus {
+  OPEN
+  FULL
+  CLOSED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+}
+
+model User {
+  id           String                       @id @default(uuid())
+  name         String
+  email        String                       @unique
+  passwordHash String
+  role         Role                         @default(USER)
+  active       Boolean                      @default(true)
+  bio          String?
+  photoUrl     String?
+  interests    String[]
+  travelStyle  String?
+  // pgvector column; read/written via raw SQL
+  embedding    Unsupported("vector(1536)")?
+  createdAt    DateTime                     @default(now())
+
+  plans         TravelPlan[]
+  joinRequests  JoinRequest[]
+  companions    Companion[]
+  sentFriends   Friendship[]       @relation("FriendRequester")
+  recvFriends   Friendship[]       @relation("FriendAddressee")
+  blocks        Block[]            @relation("Blocker")
+  blockedBy     Block[]            @relation("Blocked")
+  sentMessages  Message[]          @relation("MsgSender")
+  recvMessages  Message[]          @relation("MsgReceiver")
+  communityMsgs CommunityMessage[]
+}
+
+model TravelPlan {
+  id            String                       @id @default(uuid())
+  hostId        String
+  host          User                         @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  title         String
+  destination   String
+  description   String?
+  coverUrl      String?
+  startDate     DateTime
+  endDate       DateTime
+  interests     String[]
+  maxCompanions Int?
+  status        PlanStatus                   @default(OPEN)
+  itinerary     Json                         @default("[]") // [{ day, title, activities[] }]
+  embedding     Unsupported("vector(1536)")?
+  createdAt     DateTime                     @default(now())
+
+  requests   JoinRequest[]
+  companions Companion[]
+
+  @@index([status, startDate])
+}
+
+model JoinRequest {
+  id        String        @id @default(uuid())
+  planId    String
+  userId    String
+  status    RequestStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  plan      TravelPlan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, userId])
+}
+
+model Companion {
+  planId   String
+  userId   String
+  joinedAt DateTime   @default(now())
+  plan     TravelPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([planId, userId])
+}
+
+// One row per friend pair; service normalises ordering and a migration adds
+// a unique index on (LEAST(requesterId, addresseeId), GREATEST(...)).
+model Friendship {
+  id          String       @id @default(uuid())
+  requesterId String
+  addresseeId String
+  status      FriendStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  requester   User         @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee   User         @relation("FriendAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, addresseeId])
+}
+
+model Block {
+  blockerId String
+  blockedId String
+  blocker   User   @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked   User   @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@id([blockerId, blockedId])
+}
+
+model Message {
+  id         String    @id @default(uuid())
+  senderId   String
+  receiverId String
+  body       String
+  readAt     DateTime?
+  createdAt  DateTime  @default(now())
+  sender     User      @relation("MsgSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User      @relation("MsgReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([receiverId, readAt])
+}
+
+model CommunityMessage {
+  id        String   @id @default(uuid())
+  userId    String
+  body      String
+  flagged   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TravelPackage {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  imageUrl    String?
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
