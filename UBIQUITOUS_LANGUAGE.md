@@ -45,6 +45,7 @@ The shared vocabulary for the STC team. Use these terms, and only these terms, i
 |---|---|---|
 | **Friend** | A mutual connection between two Users, from an accepted Friend Request or from becoming Companions. | contact, buddy |
 | **Friend Request** | A pending request from one User to another to become Friends. | follow, invite |
+| **Friendship** | The stored mutual connection between two Users (model `Friendship`); states `PENDING` and `ACCEPTED`. | connection, link |
 | **Unfriend** | Ending a Friendship. | remove contact |
 | **Block / Unblock** | One User prevents another from contacting or befriending them, and reverses it. | mute, ban |
 | **Private Chat** | Real-time one-to-one messaging between Friends. | DM, inbox |
@@ -60,7 +61,7 @@ The shared vocabulary for the STC team. Use these terms, and only these terms, i
 | **Explore Feed** | The paginated, filterable, searchable list of Travel Plans. Cached in Redis. | home feed, marketplace |
 | **Filter** | Narrowing the Explore Feed by interest, date range, open-only or hide-ended. | facet |
 | **Feed Cache** | The Redis copy of Explore Feed results, invalidated when plans or profiles change. | cache layer |
-| **Featured Package** | A curated travel package an Admin promotes on the platform. | ad, promo |
+| **Featured Package** | A curated travel package an Admin promotes on the platform (model `FeaturedPackage`). | ad, promo |
 
 ## AI layer
 
