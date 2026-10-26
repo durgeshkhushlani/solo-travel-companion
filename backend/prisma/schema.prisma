@@ -32,6 +32,7 @@ enum FriendStatus {
   ACCEPTED
 }
 
+/// User: registered person; role USER or ADMIN. active=false is Account Deactivation.
 model User {
   id           String                       @id @default(uuid())
   name         String
@@ -59,6 +60,7 @@ model User {
   communityMsgs CommunityMessage[]
 }
 
+/// Travel Plan: trip published by its Host, containing the Itinerary. Spots Left is derived from maxCompanions.
 model TravelPlan {
   id            String                       @id @default(uuid())
   hostId        String
@@ -82,6 +84,7 @@ model TravelPlan {
   @@index([status, startDate])
 }
 
+/// Join Request: a User asking to join a Travel Plan; at most one per plan and User.
 model JoinRequest {
   id        String        @id @default(uuid())
   planId    String
@@ -94,6 +97,7 @@ model JoinRequest {
   @@unique([planId, userId])
 }
 
+/// Companion: User whose Join Request was accepted. The Host is never a Companion of their own plan.
 model Companion {
   planId   String
   userId   String
@@ -104,8 +108,9 @@ model Companion {
   @@id([planId, userId])
 }
 
-// One row per friend pair; service normalises ordering and a migration adds
-// a unique index on (LEAST(requesterId, addresseeId), GREATEST(...)).
+/// Friendship: one row per pair of Users. requester/addressee record who sent the
+/// Friend Request. Reverse-pair uniqueness (A,B vs B,A) is enforced in the service and
+/// by a migration with a unique index on (LEAST(requesterId, addresseeId), GREATEST(...)).
 model Friendship {
   id          String       @id @default(uuid())
   requesterId String
@@ -118,6 +123,7 @@ model Friendship {
   @@unique([requesterId, addresseeId])
 }
 
+/// Block: blocker prevents blocked from befriending or messaging them.
 model Block {
   blockerId String
   blockedId String
@@ -127,6 +133,7 @@ model Block {
   @@id([blockerId, blockedId])
 }
 
+/// Message: one entry in a Private Chat between Friends.
 model Message {
   id         String    @id @default(uuid())
   senderId   String
@@ -140,6 +147,7 @@ model Message {
   @@index([receiverId, readAt])
 }
 
+/// Community Room message; flagged = Moderation Flag.
 model CommunityMessage {
   id        String   @id @default(uuid())
   userId    String
@@ -149,11 +157,12 @@ model CommunityMessage {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model TravelPackage {
+/// Featured Package: a curated package an Admin promotes.
+model FeaturedPackage {
   id          String   @id @default(uuid())
   title       String
   description String?
   imageUrl    String?
-  featured    Boolean  @default(false)
+  active      Boolean  @default(true)
   createdAt   DateTime @default(now())
 }
