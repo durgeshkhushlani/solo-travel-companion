@@ -25,6 +25,8 @@ export function createWorld({ now = BEFORE_START } = {}) {
       host: summary(db.users.find((u) => u.id === plan.hostId) ?? { id: plan.hostId, name: '?' }),
       acceptedCount: acceptedCount(plan.id),
     };
+  const pairMatches = (m, a, b) =>
+    (m.senderId === a && m.receiverId === b) || (m.senderId === b && m.receiverId === a);
   const samePair = (f, a, b) =>
     (f.requesterId === a && f.addresseeId === b) || (f.requesterId === b && f.addresseeId === a);
 
@@ -35,6 +37,25 @@ export function createWorld({ now = BEFORE_START } = {}) {
       },
       async findByEmail(email) {
         return db.users.find((u) => u.email === email) ?? null;
+      },
+      async list() {
+        return [...db.users];
+      },
+      async update(id, data) {
+        return Object.assign(
+          db.users.find((u) => u.id === id),
+          data,
+        );
+      },
+    },
+    admin: {
+      async stats() {
+        return {
+          users: db.users.length,
+          plans: db.plans.length,
+          requests: db.requests.length,
+          messages: db.messages.length,
+        };
       },
     },
     plans: {
@@ -159,6 +180,36 @@ export function createWorld({ now = BEFORE_START } = {}) {
             friendshipId: f.id,
             user: summary(db.users.find((u) => u.id === f.requesterId)),
           }));
+      },
+    },
+    messages: {
+      async create({ senderId, receiverId, body }) {
+        const message = {
+          id: newId('msg'),
+          senderId,
+          receiverId,
+          body,
+          readAt: null,
+          createdAt: new Date(world.now),
+        };
+        db.messages.push(message);
+        return message;
+      },
+      async between(a, b) {
+        return db.messages.filter((m) => pairMatches(m, a, b));
+      },
+      async last(a, b) {
+        return db.messages.filter((m) => pairMatches(m, a, b)).at(-1) ?? null;
+      },
+      async unreadCount(fromId, toId) {
+        return db.messages.filter(
+          (m) => m.senderId === fromId && m.receiverId === toId && !m.readAt,
+        ).length;
+      },
+      async markRead(fromId, toId, at) {
+        db.messages
+          .filter((m) => m.senderId === fromId && m.receiverId === toId && !m.readAt)
+          .forEach((m) => (m.readAt = at));
       },
     },
     blocks: {

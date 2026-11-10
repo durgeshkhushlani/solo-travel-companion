@@ -11,7 +11,7 @@ import { bcryptHasher } from './adapters/bcryptHasher.js';
 const services = createServices({ prisma, clock: systemClock, hasher: bcryptHasher });
 const app = createApp(services);
 const server = http.createServer(app);
-initSockets(server);
+initSockets(server, { messages: services.messages, users: services.repos.users });
 scheduleClosePlans({ plans: services.repos.plans, clock: systemClock });
 
 server.listen(env.port, () => console.log(`STC backend listening on :${env.port}`));
