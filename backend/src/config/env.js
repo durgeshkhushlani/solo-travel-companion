@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { assertProductionConfig } from './assertProductionConfig.js';
 
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? 'development',
@@ -12,3 +13,9 @@ export const env = {
   geminiModel: process.env.GEMINI_MODEL ?? 'gemini-2.5-flash',
   geminiEmbeddingModel: process.env.GEMINI_EMBEDDING_MODEL ?? 'gemini-embedding-001',
 };
+
+assertProductionConfig({
+  nodeEnv: env.nodeEnv,
+  jwtSecretFromEnv: Boolean(process.env.JWT_SECRET),
+  cookieSecure: env.cookieSecure,
+});
