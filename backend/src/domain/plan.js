@@ -34,3 +34,27 @@ export function statusAfterAccepting(plan, acceptedCount, now) {
   assertAcceptingRequests(plan, acceptedCount, now);
   return statusFor(plan, acceptedCount + 1, now);
 }
+
+// Rule 2 (Host decides) and every Host-only action: the actor must be the plan's Host.
+export function assertHost(plan, actorId) {
+  if (plan.hostId !== actorId) {
+    throw new DomainError(ErrorCode.NOT_HOST, 'Only the Host can do this', 403);
+  }
+}
+
+export function assertStartsInFuture(plan, now) {
+  if (hasStarted(plan, now)) {
+    throw new DomainError(ErrorCode.PLAN_IN_PAST, 'The start date must be in the future', 400);
+  }
+}
+
+// Lowering Max Companions below the Companions already accepted would break rule 1.
+export function assertLimitNotBelowAccepted(maxCompanions, acceptedCount) {
+  if (Number.isInteger(maxCompanions) && maxCompanions < acceptedCount) {
+    throw new DomainError(
+      ErrorCode.LIMIT_BELOW_ACCEPTED,
+      `${acceptedCount} Companions are already accepted`,
+      409,
+    );
+  }
+}
