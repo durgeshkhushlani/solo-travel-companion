@@ -6,7 +6,10 @@ export function joinButtonState({ plan, user, myRequest, isCompanion }) {
   if (!user) return 'NONE';
   if (plan.host.id === user.id) return 'HOST';
   if (isCompanion) return 'LEAVE';
-  if (myRequest?.status === 'PENDING') return 'CANCEL';
+  if (myRequest?.status === 'PENDING') {
+    // Once the trip has started the Host can no longer decide, so only show the state.
+    return plan.status === 'CLOSED' ? 'PENDING' : 'CANCEL';
+  }
   if (plan.status === 'CLOSED') return 'CLOSED';
   if (plan.status === 'FULL') return 'FULL';
   return 'JOIN';

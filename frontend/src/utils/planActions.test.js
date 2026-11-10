@@ -46,6 +46,11 @@ describe('joinButtonState', () => {
     expect(state).toBe('CANCEL');
   });
 
+  it('returns_pending_without_cancel_when_the_plan_has_closed_with_a_request_waiting', () => {
+    const state = joinButtonState({ plan: planWith('CLOSED'), user: visitor, myRequest: { status: 'PENDING' }, isCompanion: false });
+    expect(state).toBe('PENDING');
+  });
+
   it('returns_leave_for_a_companion_on_an_open_plan', () => {
     const state = joinButtonState({ plan: planWith('OPEN'), user: visitor, myRequest: { status: 'ACCEPTED' }, isCompanion: true });
     expect(state).toBe('LEAVE');
