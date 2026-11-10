@@ -31,11 +31,11 @@ export function createPlanService({ repos, uow, clock }) {
     },
 
     async explore(filters) {
-      const { items, total } = await repos.plans.search(filters, {
-        page: filters.page,
-        pageSize: filters.pageSize,
-      });
       const now = clock.now();
+      const { items, total } = await repos.plans.search(
+        { ...filters, now },
+        { page: filters.page, pageSize: filters.pageSize },
+      );
       return {
         items: items.map((p) => toPlanDto(p, now)),
         total,
