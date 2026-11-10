@@ -5,11 +5,11 @@ import { userRoutes } from './users.routes.js';
 import { planRoutes } from './plans.routes.js';
 import { requestRoutes } from './requests.routes.js';
 import { friendRoutes } from './friends.routes.js';
-import messages from './messages.routes.js';
+import { messageRoutes } from './messages.routes.js';
 import admin from './admin.routes.js';
 import ai from './ai.routes.js';
 
-export function buildApi({ auth, users, plans, requests, friends }) {
+export function buildApi({ auth, users, plans, requests, friends, messages }) {
   const api = Router();
   api.use(csrfProtection);
   api.use('/auth', authRoutes(auth));
@@ -17,7 +17,7 @@ export function buildApi({ auth, users, plans, requests, friends }) {
   api.use('/plans', planRoutes({ plans, requests }));
   api.use('/requests', requestRoutes({ requests }));
   api.use('/friends', friendRoutes({ friends }));
-  api.use('/messages', messages);
+  api.use('/messages', messageRoutes({ messages }));
   api.use('/admin', admin);
   api.use('/ai', ai);
   return api;
