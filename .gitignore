@@ -9,3 +9,7 @@ build/
 coverage/
 .vscode/
 .idea/
+
+# Agent worktrees and local notes
+.claude/
+test_report.md
