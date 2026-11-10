@@ -20,6 +20,20 @@ export function createRequestService({ repos, uow, clock }) {
     return plan;
   };
 
+  // The Join Request and its locked plan, once the actor is allowed to decide it (accept, reject).
+  const loadForDecision = async (tx, actorId, requestId) => {
+    const request = await findRequest(tx, requestId);
+    const plan = await lockPlan(tx, request.planId);
+    assertCanDecide({ plan, request, actorId });
+    return { request, plan };
+  };
+
+  const findRequest = async (tx, id) => {
+    const request = await tx.requests.find(id);
+    if (!request) throw notFound('Join Request');
+    return request;
+  };
+
   const present = async (tx, request, plan) =>
     toRequestDto({
       ...request,
@@ -55,10 +69,7 @@ export function createRequestService({ repos, uow, clock }) {
     // Rule 2 (Host decides), rule 1 (limit), rule 5 (Companions become Friends).
     async accept(actorId, requestId) {
       return uow.run(async (tx) => {
-        const request = await tx.requests.find(requestId);
-        if (!request) throw notFound('Join Request');
-        const plan = await lockPlan(tx, request.planId);
-        assertCanDecide({ plan, request, actorId });
+        const { request, plan } = await loadForDecision(tx, actorId, requestId);
         assertNotBlocked(await tx.blocks.exists(plan.hostId, request.userId));
         const statusAfter = statusAfterAccepting(plan, plan.acceptedCount, clock.now());
 
@@ -74,10 +85,7 @@ export function createRequestService({ repos, uow, clock }) {
 
     async reject(actorId, requestId) {
       return uow.run(async (tx) => {
-        const request = await tx.requests.find(requestId);
-        if (!request) throw notFound('Join Request');
-        const plan = await lockPlan(tx, request.planId);
-        assertCanDecide({ plan, request, actorId });
+        const { plan } = await loadForDecision(tx, actorId, requestId);
         const rejected = await tx.requests.setStatus(requestId, RequestStatus.REJECTED);
         return present(tx, rejected, plan);
       });
@@ -85,8 +93,7 @@ export function createRequestService({ repos, uow, clock }) {
 
     async cancel(actorId, requestId) {
       return uow.run(async (tx) => {
-        const request = await tx.requests.find(requestId);
-        if (!request) throw notFound('Join Request');
+        const request = await findRequest(tx, requestId);
         assertCanCancel({ request, actorId });
         const plan = await lockPlan(tx, request.planId);
         const cancelled = await tx.requests.setStatus(requestId, RequestStatus.CANCELLED);

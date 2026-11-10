@@ -11,11 +11,11 @@ Running record for the "AI use" section of `DESIGN.md`. Add an entry whenever an
 
 ## Rejected suggestions
 
-Record only suggestions that really happened: what the tool proposed, who rejected it, and why. `DESIGN.md` needs one real entry by Phase 7. None recorded yet.
+Record only suggestions that really happened: what the tool proposed, who rejected it, and why. `DESIGN.md` needs one real entry by Phase 7. One is recorded below. Team members: add your own when you reject a suggestion in review.
 
 | Date | Phase | Suggestion | Rejected by | Why |
 |---|---|---|---|---|
-| | | | | |
+| 2026-11-10 | 3 | Claude Code drafted an integration test named as a CSRF check that never omitted the CSRF header, so it could pass with CSRF protection removed. | Claude Code, on re-reading its own draft before commit (team to confirm in review) | A test whose name promises more than it checks is a test smell (Lecture 15–16). Replaced by two tests that each do what they say: `backend/tests/integration/plans.int.test.js:62` sends no CSRF header and expects 403. |
 
 ## Scope decisions made with AI help
 
