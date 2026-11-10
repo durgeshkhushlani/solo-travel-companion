@@ -16,6 +16,7 @@ export const ErrorCode = Object.freeze({
   SELF_ACTION: 'SELF_ACTION',
   PLAN_IN_PAST: 'PLAN_IN_PAST',
   LIMIT_BELOW_ACCEPTED: 'LIMIT_BELOW_ACCEPTED',
+  INVALID_DATES: 'INVALID_DATES',
   NOT_FRIENDS: 'NOT_FRIENDS',
   ALREADY_FRIENDS: 'ALREADY_FRIENDS',
 });
@@ -29,3 +30,5 @@ export class DomainError extends Error {
     this.expose = true;
   }
 }
+
+export const notFound = (what) => new DomainError(ErrorCode.NOT_FOUND, `${what} not found`, 404);

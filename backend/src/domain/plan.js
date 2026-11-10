@@ -58,3 +58,9 @@ export function assertLimitNotBelowAccepted(maxCompanions, acceptedCount) {
     );
   }
 }
+
+export function assertDatesOrdered(startDate, endDate) {
+  if (endDate.getTime() < startDate.getTime()) {
+    throw new DomainError(ErrorCode.INVALID_DATES, 'The end date is before the start date', 400);
+  }
+}
