@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
   assertAcceptingRequests,
+  assertHost,
+  assertLimitNotBelowAccepted,
+  assertStartsInFuture,
   hasStarted,
   spotsLeft,
   statusAfterAccepting,
@@ -108,5 +111,44 @@ describe('Companion limit (rule 1)', () => {
     expect(() => assertAcceptingRequests(plan, 1, at('2027-03-02T00:00:00.000Z'))).toThrowError(
       expect.objectContaining({ code: ErrorCode.PLAN_CLOSED }),
     );
+  });
+});
+
+describe('Host-only and date rules', () => {
+  it('lets_only_the_host_pass_assertHost', () => {
+    const plan = makePlan();
+
+    expect(() => assertHost(plan, 'host-1')).not.toThrow();
+    expect(() => assertHost(plan, 'asha-1')).toThrowError(
+      expect.objectContaining({ code: ErrorCode.NOT_HOST, status: 403 }),
+    );
+  });
+
+  it('refuses_creating_a_plan_whose_start_date_is_reached', () => {
+    const plan = makePlan();
+
+    expect(() => assertStartsInFuture(plan, at('2027-03-01T00:00:00.000Z'))).toThrowError(
+      expect.objectContaining({ code: ErrorCode.PLAN_IN_PAST }),
+    );
+  });
+
+  it('accepts_a_plan_that_starts_after_now', () => {
+    const plan = makePlan();
+
+    expect(() => assertStartsInFuture(plan, at('2027-02-28T23:59:59.999Z'))).not.toThrow();
+  });
+
+  it.each([
+    [2, 3, true],
+    [3, 3, false],
+    [null, 99, false],
+  ])('max_%s_with_%s_accepted_is_refused:_%s', (max, accepted, refused) => {
+    const run = () => assertLimitNotBelowAccepted(max, accepted);
+
+    if (refused) {
+      expect(run).toThrowError(expect.objectContaining({ code: ErrorCode.LIMIT_BELOW_ACCEPTED }));
+    } else {
+      expect(run).not.toThrow();
+    }
   });
 });
