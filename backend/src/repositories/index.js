@@ -1,4 +1,5 @@
 import { makeBlockRepository, makeFriendshipRepository } from './friendship.repository.js';
+import { makeAdminRepository } from './admin.repository.js';
 import { makeMessageRepository } from './message.repository.js';
 import { makePlanRepository } from './plan.repository.js';
 import { makeCompanionRepository, makeRequestRepository } from './request.repository.js';
@@ -15,6 +16,7 @@ export function createRepositories(db) {
     friendships: makeFriendshipRepository(db),
     blocks: makeBlockRepository(db),
     messages: makeMessageRepository(db),
+    admin: makeAdminRepository(db),
   };
 }
 
