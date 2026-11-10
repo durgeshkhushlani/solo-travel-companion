@@ -9,6 +9,5 @@ export function scheduleClosePlans() {
       data: { status: 'CLOSED' },
     });
     if (count) console.log(`[jobs] closed ${count} plan(s)`);
-    // TODO: invalidate explore cache
   });
 }

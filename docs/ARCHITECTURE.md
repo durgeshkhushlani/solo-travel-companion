@@ -8,7 +8,6 @@ Two independent apps communicating over HTTP (REST) and WebSocket (Socket.IO).
 - Auth: JWT in httpOnly cookie, SameSite, CSRF token (double-submit), bcrypt, CORS limited to the frontend origin with credentials.
 - Roles: `USER` / `ADMIN` via role middleware.
 - DTO mapping at the API boundary: never return password hashes or other users' emails.
-- Redis caches the Explore feed; invalidated on plan/profile changes.
 - Cloudinary stores profile and cover images.
 
 ## Frontend (`frontend/src`)

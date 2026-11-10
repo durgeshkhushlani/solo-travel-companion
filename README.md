@@ -11,13 +11,13 @@ A full-stack platform where solo travelers publish trips with day-by-day itinera
 | `backend/` | Node.js + Express REST API (`/api/**`), Socket.IO, Prisma + PostgreSQL/pgvector |
 | `frontend/` | React 18 + Vite + Tailwind SPA |
 | `docs/` | Architecture, API areas, team roadmap |
-| `docker-compose.yml` | Postgres (pgvector), Redis, backend, frontend |
+| `docker-compose.yml` | Postgres (pgvector), backend, frontend |
 
 ## Quick start
 
 ```bash
 cp backend/.env.example backend/.env      # fill in secrets
-docker compose up -d postgres redis       # databases only
+docker compose up -d postgres             # database only
 cd backend && npm install && npx prisma migrate dev && npm run dev
 cd frontend && npm install && npm run dev
 ```
@@ -29,6 +29,6 @@ Or run everything: `docker compose up --build`.
 
 ## Tech stack
 
-Node/Express, PostgreSQL + pgvector (Prisma, raw SQL for vector queries), Socket.IO, Redis, Cloudinary, React 18, React Router 6, Vite, Tailwind, axios, Docker Compose. AI (itinerary generator, companion matching, travel assistant) is called from the backend via SDK.
+Node/Express, PostgreSQL + pgvector (Prisma, raw SQL for vector queries), Socket.IO, Cloudinary, React 18, React Router 6, Vite, Tailwind, axios, Docker Compose. AI (itinerary generator, companion matching, travel assistant) is called from the backend via SDK.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/ROADMAP.md](docs/ROADMAP.md).

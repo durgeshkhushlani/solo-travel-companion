@@ -58,9 +58,8 @@ The shared vocabulary for the STC team. Use these terms, and only these terms, i
 
 | Term | Definition | Avoid |
 |---|---|---|
-| **Explore Feed** | The paginated, filterable, searchable list of Travel Plans. Cached in Redis. | home feed, marketplace |
+| **Explore Feed** | The paginated, filterable, searchable list of Travel Plans. | home feed, marketplace |
 | **Filter** | Narrowing the Explore Feed by interest, date range, open-only or hide-ended. | facet |
-| **Feed Cache** | The Redis copy of Explore Feed results, invalidated when plans or profiles change. | cache layer |
 | **Featured Package** | A curated travel package an Admin promotes on the platform (model `FeaturedPackage`). | ad, promo |
 
 ## AI layer
