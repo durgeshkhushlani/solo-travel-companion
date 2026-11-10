@@ -7,9 +7,20 @@ import { requestRoutes } from './requests.routes.js';
 import { friendRoutes } from './friends.routes.js';
 import { messageRoutes } from './messages.routes.js';
 import { adminRoutes } from './admin.routes.js';
-import ai from './ai.routes.js';
+import { aiRoutes } from './ai.routes.js';
 
-export function buildApi({ auth, users, plans, requests, friends, messages, admin, sessionGuard }) {
+export function buildApi({
+  auth,
+  users,
+  plans,
+  requests,
+  friends,
+  messages,
+  admin,
+  ai,
+  clock,
+  sessionGuard,
+}) {
   const api = Router();
   if (sessionGuard) api.use(sessionGuard);
   api.use(csrfProtection);
@@ -20,6 +31,6 @@ export function buildApi({ auth, users, plans, requests, friends, messages, admi
   api.use('/friends', friendRoutes({ friends }));
   api.use('/messages', messageRoutes({ messages }));
   api.use('/admin', adminRoutes({ admin }));
-  api.use('/ai', ai);
+  api.use('/ai', aiRoutes({ ai, clock }));
   return api;
 }
