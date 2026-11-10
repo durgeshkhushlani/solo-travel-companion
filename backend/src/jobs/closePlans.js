@@ -1,13 +1,14 @@
 import cron from 'node-cron';
-import { prisma } from '../config/db.js';
 
-// Auto-close plans once the trip has started (runs hourly).
-export function scheduleClosePlans() {
+// Auto-Close: sets started Travel Plans to CLOSED. Time and storage are injected (ports).
+export async function closeStartedPlans({ plans, clock }) {
+  return plans.closeStartedBy(clock.now());
+}
+
+// Runs hourly.
+export function scheduleClosePlans(deps) {
   cron.schedule('0 * * * *', async () => {
-    const { count } = await prisma.travelPlan.updateMany({
-      where: { status: { not: 'CLOSED' }, startDate: { lte: new Date() } },
-      data: { status: 'CLOSED' },
-    });
-    if (count) console.log(`[jobs] closed ${count} plan(s)`);
+    const closed = await closeStartedPlans(deps);
+    if (closed) console.log(`[jobs] closed ${closed} plan(s)`);
   });
 }
