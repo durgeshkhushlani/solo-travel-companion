@@ -17,10 +17,10 @@ export async function resetDatabase() {
 }
 
 // The real app, real services and real Postgres, with a clock the test can move.
-export function startApp({ now = '2027-02-20T10:00:00.000Z' } = {}) {
+export function startApp({ now = '2027-02-20T10:00:00.000Z', llm, embedder } = {}) {
   const time = { current: new Date(now) };
   const clock = { now: () => new Date(time.current) };
-  const services = createServices({ prisma, clock, hasher: bcryptHasher });
+  const services = createServices({ prisma, clock, hasher: bcryptHasher, llm, embedder });
   return { app: createApp(services), services, time };
 }
 

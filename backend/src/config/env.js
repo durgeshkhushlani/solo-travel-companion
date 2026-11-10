@@ -7,4 +7,8 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET ?? 'dev-secret',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
   cookieSecure: process.env.COOKIE_SECURE === 'true',
+  // Gemini. Model names are configuration, not code, so they can follow Google's releases.
+  geminiApiKey: process.env.GEMINI_API_KEY,
+  geminiModel: process.env.GEMINI_MODEL ?? 'gemini-2.5-flash',
+  geminiEmbeddingModel: process.env.GEMINI_EMBEDDING_MODEL ?? 'gemini-embedding-001',
 };

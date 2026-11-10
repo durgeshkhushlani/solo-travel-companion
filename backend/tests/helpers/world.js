@@ -48,6 +48,36 @@ export function createWorld({ now = BEFORE_START } = {}) {
         );
       },
     },
+    embeddings: {
+      plans: new Map(),
+      users: new Map(),
+      async setPlan(id, vector) {
+        repos.embeddings.plans.set(id, vector);
+      },
+      async setUser(id, vector) {
+        repos.embeddings.users.set(id, vector);
+      },
+      async clearPlan(id) {
+        repos.embeddings.plans.delete(id);
+      },
+      async clearUser(id) {
+        repos.embeddings.users.delete(id);
+      },
+      async getPlans(ids) {
+        return new Map(
+          ids
+            .filter((i) => repos.embeddings.plans.has(i))
+            .map((i) => [i, repos.embeddings.plans.get(i)]),
+        );
+      },
+      async getUsers(ids) {
+        return new Map(
+          ids
+            .filter((i) => repos.embeddings.users.has(i))
+            .map((i) => [i, repos.embeddings.users.get(i)]),
+        );
+      },
+    },
     admin: {
       async stats() {
         return {

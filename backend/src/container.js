@@ -1,4 +1,5 @@
 import { createRepositories, createUnitOfWork } from './repositories/index.js';
+import { createAiService } from './services/ai.service.js';
 import { createAuthService } from './services/auth.service.js';
 import { createAdminService } from './services/admin.service.js';
 import { activeSession } from './middleware/sessionGuard.js';
@@ -11,7 +12,7 @@ import { createUserService } from './services/user.service.js';
 // Composition root: the one place that picks the real implementations behind the ports.
 // server.js uses it with the real clock and bcrypt; integration tests use it with a test
 // database and a fixed clock.
-export function createServices({ prisma, clock, hasher }) {
+export function createServices({ prisma, clock, hasher, llm, embedder }) {
   const repos = createRepositories(prisma);
   const uow = createUnitOfWork(prisma);
   return {
@@ -25,6 +26,7 @@ export function createServices({ prisma, clock, hasher }) {
     friends: createFriendService({ repos, uow }),
     messages: createMessageService({ repos, uow, clock }),
     admin: createAdminService({ repos, clock }),
+    ai: createAiService({ repos, llm, embedder, clock }),
     sessionGuard: activeSession(repos.users),
   };
 }

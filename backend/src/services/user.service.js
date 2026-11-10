@@ -9,6 +9,10 @@ export function createUserService({ repos }) {
       return user;
     },
 
-    update: (id, input) => repos.users.update(id, input),
+    async update(id, input) {
+      const user = await repos.users.update(id, input);
+      await repos.embeddings.clearUser(id);
+      return user;
+    },
   };
 }
