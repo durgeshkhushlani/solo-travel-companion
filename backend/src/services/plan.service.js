@@ -56,6 +56,8 @@ export function createPlanService({ repos, uow, clock }) {
         }
         const status = statusFor(merged, current.acceptedCount, clock.now());
         const updated = await tx.plans.update(id, { ...input, status });
+        // The Embedding was made from the old text, so it is stale until regenerated.
+        await tx.embeddings.clearPlan(id);
         return toPlanDto(updated, clock.now());
       });
     },
