@@ -1,7 +1,9 @@
 import { Router } from 'express';
 
-const router = Router();
+export function authRoutes(_auth) {
+  const router = Router();
 
-// TODO(auth): implement endpoints
+  // TODO(auth): implement endpoints
 
-export default router;
+  return router;
+}
