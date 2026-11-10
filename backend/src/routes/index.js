@@ -6,11 +6,12 @@ import { planRoutes } from './plans.routes.js';
 import { requestRoutes } from './requests.routes.js';
 import { friendRoutes } from './friends.routes.js';
 import { messageRoutes } from './messages.routes.js';
-import admin from './admin.routes.js';
+import { adminRoutes } from './admin.routes.js';
 import ai from './ai.routes.js';
 
-export function buildApi({ auth, users, plans, requests, friends, messages }) {
+export function buildApi({ auth, users, plans, requests, friends, messages, admin, sessionGuard }) {
   const api = Router();
+  if (sessionGuard) api.use(sessionGuard);
   api.use(csrfProtection);
   api.use('/auth', authRoutes(auth));
   api.use('/users', userRoutes({ users }));
@@ -18,7 +19,7 @@ export function buildApi({ auth, users, plans, requests, friends, messages }) {
   api.use('/requests', requestRoutes({ requests }));
   api.use('/friends', friendRoutes({ friends }));
   api.use('/messages', messageRoutes({ messages }));
-  api.use('/admin', admin);
+  api.use('/admin', adminRoutes({ admin }));
   api.use('/ai', ai);
   return api;
 }

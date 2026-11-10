@@ -38,6 +38,25 @@ export function createWorld({ now = BEFORE_START } = {}) {
       async findByEmail(email) {
         return db.users.find((u) => u.email === email) ?? null;
       },
+      async list() {
+        return [...db.users];
+      },
+      async update(id, data) {
+        return Object.assign(
+          db.users.find((u) => u.id === id),
+          data,
+        );
+      },
+    },
+    admin: {
+      async stats() {
+        return {
+          users: db.users.length,
+          plans: db.plans.length,
+          requests: db.requests.length,
+          messages: db.messages.length,
+        };
+      },
     },
     plans: {
       async findById(id) {
