@@ -7,7 +7,6 @@ import Register from './pages/Register.jsx';
 import Explore from './pages/Explore.jsx';
 import Profile from './pages/Profile.jsx';
 import Chat from './pages/Chat.jsx';
-import Community from './pages/Community.jsx';
 import Assistant from './pages/Assistant.jsx';
 import NotFound from './pages/NotFound.jsx';
 import PlanForm from './pages/travel/PlanForm.jsx';
@@ -28,7 +27,6 @@ export default function App() {
         <Route path="/plans/:id/edit" element={<ProtectedRoute><PlanForm /></ProtectedRoute>} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-        <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
         <Route path="/assistant" element={<ProtectedRoute><Assistant /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute role="ADMIN"><AdminDashboard /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />

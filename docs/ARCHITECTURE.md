@@ -21,7 +21,7 @@ Two independent apps communicating over HTTP (REST) and WebSocket (Socket.IO).
 Auth, Users, Travel plans, Join requests, Friends, Messages, Admin, AI (itinerary, recommendations, assistant), Health.
 
 ## Real-time events
-`private:message`, `community:message`, `presence`, `join:event`.
+`private:message`, `join:event`.
 
 ## Deployment
 Backend as Docker image; frontend as static build (Render/Vercel/Netlify). Prefer same-site domains so the login cookie works in all browsers.

@@ -7,7 +7,7 @@ The shared vocabulary for the STC team. Use these terms, and only these terms, i
 | Term | Definition | Avoid |
 |---|---|---|
 | **User** | A registered person on the platform with a profile and login. Role is `USER` or `ADMIN`. | member, account holder |
-| **Admin** | A User with role `ADMIN`; can moderate users, plans, community and packages. | moderator, superuser |
+| **Admin** | A User with role `ADMIN`; can deactivate Users and moderate Travel Plans. | moderator, superuser |
 | **Profile** | A User's public identity: name, photo, bio, interests, travel style and stats. Email is private. | page, bio page |
 | **Interests** | Tags a User or Travel Plan is associated with (e.g. trekking, food). | hobbies, tags |
 | **Travel Style** | A User's preferred way of travelling (e.g. budget, luxury, adventure); used in matching. | travel type |
@@ -51,8 +51,6 @@ The shared vocabulary for the STC team. Use these terms, and only these terms, i
 | **Private Chat** | Real-time one-to-one messaging between Friends. | DM, inbox |
 | **Message** | A single chat entry in a Private Chat. | text, note |
 | **Unread Badge** | The count of unread Messages shown on a chat. | notification dot |
-| **Community Room** | The single public real-time chat open to all logged-in Users, with history. | forum, lobby, global chat |
-| **Presence** | Whether a User is currently online. | status |
 
 ## Discovery
 
@@ -60,7 +58,6 @@ The shared vocabulary for the STC team. Use these terms, and only these terms, i
 |---|---|---|
 | **Explore Feed** | The paginated, filterable, searchable list of Travel Plans. | home feed, marketplace |
 | **Filter** | Narrowing the Explore Feed by interest, date range, open-only or hide-ended. | facet |
-| **Featured Package** | A curated travel package an Admin promotes on the platform (model `FeaturedPackage`). | ad, promo |
 
 ## AI layer
 
@@ -75,7 +72,6 @@ The shared vocabulary for the STC team. Use these terms, and only these terms, i
 | **Match Reason** | The short "why this match" line shown with a Best Match. | explanation |
 | **Travel Assistant** | The chatbot agent that answers questions using tools against real platform data. | AI chat, bot |
 | **Assistant Tool** | A function the Travel Assistant can call: search plans, check availability, suggest companions. | plugin, action |
-| **Moderation Flag** | (Optional) An AI mark on a Community Room message for spam, abuse or scams, shown to Admins. | report |
 
 ## Admin
 
@@ -84,7 +80,7 @@ The shared vocabulary for the STC team. Use these terms, and only these terms, i
 | **Admin Panel** | The role-restricted area for platform stats, user management and moderation. | dashboard, backoffice |
 | **Platform Stats** | Aggregate counts shown to Admins (users, plans, requests, etc.). | analytics |
 | **Account Deactivation** | An Admin disabling a User's ability to log in without deleting their data. | ban, suspend |
-| **Moderation** | Admin review and removal of Travel Plans or Community Room messages. | censorship |
+| **Moderation** | Admin review and removal of Travel Plans. | censorship |
 
 ## Key rules (invariants)
 

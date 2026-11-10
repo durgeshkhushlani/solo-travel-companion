@@ -7,7 +7,6 @@ export default function Navbar() {
       <Link to="/explore">Explore</Link>
       <Link to="/plans/new">Create plan</Link>
       <Link to="/chat">Chat</Link>
-      <Link to="/community">Community</Link>
       <Link to="/assistant">Assistant</Link>
       <Link to="/login" className="ml-auto">Login</Link>
     </nav>

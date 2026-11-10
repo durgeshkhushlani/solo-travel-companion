@@ -57,7 +57,6 @@ model User {
   blockedBy     Block[]            @relation("Blocked")
   sentMessages  Message[]          @relation("MsgSender")
   recvMessages  Message[]          @relation("MsgReceiver")
-  communityMsgs CommunityMessage[]
 }
 
 /// Travel Plan: trip published by its Host, containing the Itinerary. Spots Left is derived from maxCompanions.
@@ -145,24 +144,4 @@ model Message {
   receiver   User      @relation("MsgReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
 
   @@index([receiverId, readAt])
-}
-
-/// Community Room message; flagged = Moderation Flag.
-model CommunityMessage {
-  id        String   @id @default(uuid())
-  userId    String
-  body      String
-  flagged   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-/// Featured Package: a curated package an Admin promotes.
-model FeaturedPackage {
-  id          String   @id @default(uuid())
-  title       String
-  description String?
-  imageUrl    String?
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
 }

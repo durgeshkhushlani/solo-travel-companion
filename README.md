@@ -2,7 +2,7 @@
 
 **Connect · Explore · Travel Together**
 
-A full-stack platform where solo travelers publish trips with day-by-day itineraries, find companions, join each other's plans, and chat in real time. Includes a public community room, an admin panel, and an AI layer.
+A full-stack platform where solo travelers publish trips with day-by-day itineraries, find companions, join each other's plans, and chat in real time. Includes a minimal admin panel and an AI layer.
 
 ## Structure
 

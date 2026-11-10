@@ -7,8 +7,6 @@ export function initSockets(httpServer) {
   io.on('connection', (socket) => {
     // TODO: authenticate from cookie, join room `user:<id>`
     socket.on('private:message', () => {});
-    socket.on('community:message', () => {});
-    socket.on('disconnect', () => {}); // TODO: presence
   });
 
   return io;
