@@ -6,6 +6,9 @@ export function createFakeUsers(seed = []) {
     async findByEmail(email) {
       return rows.find((u) => u.email === email) ?? null;
     },
+    async findById(id) {
+      return rows.find((u) => u.id === id) ?? null;
+    },
     async create({ name, email, passwordHash }) {
       const user = {
         id: `user-${rows.length + 1}`,

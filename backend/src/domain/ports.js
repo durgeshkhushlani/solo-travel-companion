@@ -9,6 +9,7 @@
 /**
  * @typedef {{
  *   findByEmail(email: string): Promise<object | null>,
+ *   findById(id: string): Promise<object | null>,
  *   create(data: { name: string, email: string, passwordHash: string }): Promise<object>
  * }} UserRepository
  */

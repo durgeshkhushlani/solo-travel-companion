@@ -24,5 +24,11 @@ export function createAuthService({ users, hasher }) {
       }
       return user;
     },
+
+    // The User behind a Session, or null when the account is gone or deactivated.
+    async currentUser(id) {
+      const user = await users.findById(id);
+      return user?.active ? user : null;
+    },
   };
 }

@@ -75,3 +75,23 @@ describe('login', () => {
     });
   });
 });
+
+describe('currentUser', () => {
+  it('returns_the_user_for_a_known_active_id', async () => {
+    const { auth, registered } = await serviceWithAsha();
+
+    expect(await auth.currentUser(registered.id)).toBe(registered);
+  });
+
+  it('returns_null_for_an_unknown_id', async () => {
+    const { auth } = await serviceWithAsha();
+
+    expect(await auth.currentUser('missing')).toBeNull();
+  });
+
+  it('returns_null_once_the_account_is_deactivated', async () => {
+    const { auth, registered } = await serviceWithAsha({ active: false });
+
+    expect(await auth.currentUser(registered.id)).toBeNull();
+  });
+});

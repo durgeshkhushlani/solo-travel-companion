@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { csrfProtection } from '../middleware/csrf.js';
 import { authRoutes } from './auth.routes.js';
 import users from './users.routes.js';
 import plans from './plans.routes.js';
@@ -10,6 +11,7 @@ import ai from './ai.routes.js';
 
 export function buildApi({ auth }) {
   const api = Router();
+  api.use(csrfProtection);
   api.use('/auth', authRoutes(auth));
   api.use('/users', users);
   api.use('/plans', plans);
