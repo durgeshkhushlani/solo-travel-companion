@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
-import app from '../src/app.js';
+import { createApp } from '../src/app.js';
+
+const app = createApp({});
 
 describe('health check', () => {
   it('reports_ok_when_the_server_is_running', async () => {

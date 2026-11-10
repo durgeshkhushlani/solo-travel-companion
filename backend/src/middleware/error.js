@@ -3,6 +3,6 @@ export function notFound(req, res) {
 }
 
 export function errorHandler(err, req, res, next) {
-  console.error(err);
+  if (!err.expose) console.error(err);
   res.status(err.status ?? 500).json({ error: err.expose ? err.message : 'Internal server error' });
 }

@@ -1,6 +1,6 @@
 # DESIGN
 
-> **Status: draft (end of Phase 1).** Rules are fixed. The decisions and the boundary are filled in with real `file:line` references as the code lands (Phases 2–6). Nothing below cites code that does not exist yet.
+> **Status: draft (end of Phase 2).** Rules are fixed. Decisions 2 and 3 and the boundary cite code that exists today; decision 1 and the AI side of the boundary land in Phases 3 and 5. Every `file:line` is re-verified in Phase 7.
 
 Terms come only from [`UBIQUITOUS_LANGUAGE.md`](UBIQUITOUS_LANGUAGE.md).
 
@@ -16,15 +16,17 @@ Terms come only from [`UBIQUITOUS_LANGUAGE.md`](UBIQUITOUS_LANGUAGE.md).
 
 | # | Principle | Where | Before → after |
 |---|---|---|---|
-| 1 | Single Responsibility (Lecture 17–18) | _to fill in Phase 3_ | _Plan routes held validation, rules and queries together → rules move into a plan service_ |
-| 2 | Dependency Inversion (Lecture 17–18, 23) | _to fill in Phase 2_ | _Rules call `new Date()` and Prisma directly → they receive a Clock and a repository_ |
-| 3 | Types as design (Lecture 24) | _to fill in Phase 2_ | _Statuses compared as free strings → enums parsed once at the edge_ |
-
-Each row is completed with a `file:line`, a short code excerpt of the old shape, and the reason for the change.
+| 1 | Single Responsibility (Lecture 17–18) | _Phase 3_ | _Plan handlers will hold validation, rules and queries together → rules move into a plan service_ |
+| 2 | Dependency Inversion (Lecture 17–18, 23) | `backend/src/jobs/closePlans.js:4`, `backend/src/app.js:11` | The Auto-Close job called `new Date()` and Prisma directly (`docs/evidence/before-closePlans.js.txt:7-8`), so it could only be exercised against a live database. `closeStartedPlans` now receives a Clock and a plan repository, and `createApp(deps)` receives its collaborators (was a module singleton, `docs/evidence/before-app.js.txt:9` and `:22`). `server.js` is the one place that names the real adapters. |
+| 3 | Types as design (Lecture 24) | `backend/src/domain/enums.js:5`, `backend/src/domain/enums.js:10`, `backend/src/validation/auth.schemas.js:8` | Plan Status was compared as the string literal `'CLOSED'` (`docs/evidence/before-closePlans.js.txt:8-9`). It is now a frozen enum, and `parseEnum` returns a member or `null`. Register and login input is parsed once by zod at the edge, and unknown fields such as `role` are dropped, so the service only sees trusted values. |
 
 ## One boundary
 
-**Planned:** the core rules sit inside; Postgres (Prisma), Gemini and Cloudinary sit outside behind ports (`PlanRepository`, `Clock`, `LlmClient`, `Embedder`). The dependency that this shields us from is the LLM provider and the database: the rules can be tested with in-memory fakes, and Gemini could be replaced by editing one adapter. Filled in with `file:line` in Phase 2 and Phase 5.
+The core rules (`backend/src/domain/plan.js`, `backend/src/domain/friendship.js`) sit inside. They import nothing from Express, Prisma or Node I/O. Postgres, bcrypt and the system clock sit outside, behind the ports documented at `backend/src/domain/ports.js:1`; their adapters are `backend/src/repositories/plan.repository.js:4`, `backend/src/repositories/user.repository.js:7`, `backend/src/adapters/bcryptHasher.js:5` and `backend/src/adapters/systemClock.js:1`.
+
+The dependency this shields us from is the database and the wall clock: the rules run in milliseconds with plain objects and a fixed time, and the auth routes are tested against in-memory fakes (`backend/tests/helpers/fakes.js:2`). The `LlmClient` and `Embedder` ports for Gemini are added in Phase 5 and will be cited here.
+
+**Not yet wired:** rules 1 and 5 exist as pure functions with tests but no HTTP flow calls them until the Join Request endpoints land in Phase 3.
 
 ## AI use
 
