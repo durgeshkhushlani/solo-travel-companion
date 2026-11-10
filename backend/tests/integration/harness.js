@@ -1,8 +1,11 @@
+import http from 'node:http';
 import { PrismaClient } from '@prisma/client';
+import { io as connect } from 'socket.io-client';
 import request from 'supertest';
 import { createApp } from '../../src/app.js';
 import { bcryptHasher } from '../../src/adapters/bcryptHasher.js';
 import { createServices } from '../../src/container.js';
+import { initSockets } from '../../src/sockets/index.js';
 import { TEST_DATABASE_URL } from './testDatabase.js';
 
 export const prisma = new PrismaClient({ datasourceUrl: TEST_DATABASE_URL });
@@ -37,6 +40,7 @@ export async function signUp(app, name) {
   return {
     id: res.body.user.id,
     name,
+    cookie: res.headers['set-cookie'].map((c) => c.split(';')[0]).join('; '),
     get: (url) => agent.get(url),
     post: (url, body) => withCsrf(agent.post(url)).send(body),
     patch: (url, body) => withCsrf(agent.patch(url)).send(body),
@@ -53,3 +57,30 @@ export const planInput = (overrides = {}) => ({
   maxCompanions: 2,
   ...overrides,
 });
+
+// The real app behind a listening HTTP server with Socket.IO attached, on a free port.
+export async function startServer(options) {
+  const started = startApp(options);
+  const server = http.createServer(started.app);
+  const io = initSockets(server, {
+    messages: started.services.messages,
+    users: started.services.repos.users,
+  });
+  await new Promise((resolve) => server.listen(0, resolve));
+  const url = `http://localhost:${server.address().port}`;
+  const clients = [];
+  return {
+    ...started,
+    url,
+    // Opens a socket the way the browser does: the Session cookie rides on the handshake.
+    connect(cookie) {
+      const socket = connect(url, { extraHeaders: cookie ? { cookie } : {}, reconnection: false });
+      clients.push(socket);
+      return socket;
+    },
+    async close() {
+      clients.forEach((c) => c.close());
+      await io.close();
+    },
+  };
+}
