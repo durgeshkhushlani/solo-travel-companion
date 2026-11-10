@@ -7,12 +7,13 @@ Two independent apps communicating over HTTP (REST) and WebSocket (Socket.IO).
 
 - `domain/`: pure rules and types (enums, plan, friendship, errors, port contracts). Imports nothing from Express, Prisma or Node I/O.
 - `repositories/` and `adapters/`: Prisma, bcrypt and the system clock.
-- `server.js` is the composition root; `createApp(deps)` takes its collaborators so tests can pass fakes.
+- `container.js` is the composition root (`createServices`); `server.js` builds the real clock, hasher and Gemini client and starts the process. `createApp(deps)` takes its collaborators so tests can pass fakes.
+- `services/` hold the use cases and run each write in one transaction (`uow`); `ai/` holds the Gemini adapter and the AI logic behind the `LlmClient` and `Embedder` ports.
 
 - Auth: JWT in httpOnly cookie, SameSite, CSRF token (double-submit), bcrypt, CORS limited to the frontend origin with credentials.
 - Roles: `USER` / `ADMIN` via role middleware.
 - DTO mapping at the API boundary: never return password hashes or other users' emails.
-- Cloudinary stores profile and cover images.
+- Profile and cover images are URLs the user supplies; there is no file upload.
 
 ## Frontend (`frontend/src`)
 `api`, `components`, `context` (auth, notifications), `hooks` (socket), `pages` (incl. `admin/`, `travel/`), `utils`.

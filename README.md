@@ -29,6 +29,14 @@ Or run everything: `docker compose up --build`.
 
 ## Tech stack
 
-Node/Express, PostgreSQL + pgvector (Prisma, raw SQL for vector queries), Socket.IO, Cloudinary, React 18, React Router 6, Vite, Tailwind, axios, Docker Compose. AI (itinerary generator, companion matching, travel assistant) is called from the backend via SDK.
+Node/Express, PostgreSQL + pgvector (Prisma, raw SQL for vector queries), Socket.IO, React 18, React Router 6, Vite, Tailwind, axios, Docker Compose. AI (itinerary generator, companion matching, travel assistant) uses the Gemini REST API from the backend; set `GEMINI_API_KEY` in `backend/.env` (without it the AI endpoints answer 503 and the rest of the app works).
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/ROADMAP.md](docs/ROADMAP.md).
+See [DESIGN.md](DESIGN.md), [TESTING.md](TESTING.md), [UBIQUITOUS_LANGUAGE.md](UBIQUITOUS_LANGUAGE.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/API.md](docs/API.md).
+
+## Tests
+
+```bash
+cd backend && npm test                  # unit, no database
+cd backend && npm run test:integration  # needs Postgres with pgvector (see TESTING.md)
+cd frontend && npm test
+```
