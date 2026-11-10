@@ -1,5 +1,7 @@
 import { createRepositories, createUnitOfWork } from './repositories/index.js';
 import { createAuthService } from './services/auth.service.js';
+import { createAdminService } from './services/admin.service.js';
+import { activeSession } from './middleware/sessionGuard.js';
 import { createFriendService } from './services/friend.service.js';
 import { createMessageService } from './services/message.service.js';
 import { createPlanService } from './services/plan.service.js';
@@ -22,5 +24,7 @@ export function createServices({ prisma, clock, hasher }) {
     requests: createRequestService({ repos, uow, clock }),
     friends: createFriendService({ repos, uow }),
     messages: createMessageService({ repos, uow, clock }),
+    admin: createAdminService({ repos, clock }),
+    sessionGuard: activeSession(repos.users),
   };
 }
