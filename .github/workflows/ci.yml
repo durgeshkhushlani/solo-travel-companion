@@ -35,6 +35,9 @@ jobs:
       - run: npm run format:check
       - run: npm test
       - run: npm run test:integration
+      - name: Check file:line references in the docs
+        run: node scripts/verify-docs.mjs
+        working-directory: .
 
   frontend:
     runs-on: ubuntu-latest
