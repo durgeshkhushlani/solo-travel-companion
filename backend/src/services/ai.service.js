@@ -12,7 +12,8 @@ const FEED_CANDIDATES = { page: 1, pageSize: 50 };
 const OPEN_UPCOMING = { interest: [], hideEnded: true, openOnly: true };
 const TOP_PLANS = 10;
 const TOP_MATCHES = 5;
-// Each request may create at most this many new Embeddings, which bounds latency and cost.
+// A request creates at most this many new Embeddings of each kind (plans, profiles), which
+// bounds latency and cost; the rest are filled in by later requests.
 const NEW_EMBEDDINGS_PER_REQUEST = 15;
 
 const round = (n) => Math.round(n * 1000) / 1000;
