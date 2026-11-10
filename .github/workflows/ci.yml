@@ -11,6 +11,17 @@ jobs:
     defaults:
       run:
         working-directory: backend
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: stc
+          POSTGRES_PASSWORD: stc
+          POSTGRES_DB: stc_test
+        ports: ['55432:5432']
+        options: >-
+          --health-cmd "pg_isready -U stc -d stc_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,3 +34,4 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm test
+      - run: npm run test:integration
